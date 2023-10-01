@@ -245,3 +245,86 @@ Rise transition time = time(slew_high_rise_thr) - time (slew_low_rise_thr)
 Low transition time = time(slew_high_fall_thr) - time (slew_low_fall_thr)
 ```
 
+## Day 3
+### Design and view inverter layout by VLSI System Design
+```
+git clone https://github.com/nickson-jose/vsdstdcelldesign.git
+```
+
+To view the layout of the inverter in magic:
+```
+magic -T ./libs/sky130A.tech sky130_inv.mag &
+```
+
+![alt text](https://github.com/aamodbk/iiitb_ASIC_OpenLane/blob/main/sky130_inv_magic.png)
+
+### Spice Extraction from Magic
+To extract spice netlist from magic use the following command in magic tkon window:
+```
+extract all
+ext2spice cthresh 0 rthresh 0
+ext2spice
+```
+
+ext2spice commands converts the ext file to spice netlist. cthresh and rthresh are the switches to extract all the parasitic resistance and capacitance. The extracted spice list has to be modified as shown below to use ngspice to perform simulation:
+```
+* SPICE3 file created from sky130_inv.ext - technology: sky130A
+
+.option scale=10m
+.include ./libs/pshort.lib
+.include ./libs/nshort.lib
+
+//.subckt sky130_inv A Y VPWR VGND
+M1000 Y A VGND VGND nshort w=35 l=23
++  ad=1.44n pd=0.152m as=1.37n ps=0.148m
+M1001 Y A VPWR VPWR pshort w=37 l=23
++  ad=1.44n pd=0.152m as=1.52n ps=0.156m
+
+VDD VPWR 0 3.3V
+VSS VGND 0 0V
+Va A VGND PULSE(0V 3.3V 0 0.1ns 0.1ns 2ns 4ns)
+
+C0 VPWR Y 0.117f
+C1 Y A 0.0754f
+C2 VPWR A 0.0774f
+C3 Y VGND 0.279f
+C4 A VGND 0.45f
+C5 VPWR VGND 0.781f
+//.ends
+
+.tran 1n 20n
+.control
+run
+.endc
+.end
+
+```
+
+To simulate the generated spice file type the following:
+```
+ngspice sky130_inv.spice
+```
+
+Next in the spice terminal type the following to plot the wave form type:
+```
+plot y vs time a
+```
+
+![alt text](https://github.com/aamodbk/iiitb_ASIC_OpenLane/blob/main/ngspice.png)
+
+### Standard cell Characterization of CMOS Inverter
+Characterization of the inverter standard cell depends on Four timing parameters
+* Rise Transition: Time taken for the output to rise from 20% to 80% of max value
+* Fall Transition: Time taken for the output to fall from 80% to 20% of max value
+* Cell Rise delay: difference in time(50% output rise) to time(50% input fall)
+* Cell Fall delay: difference in time(50% output fall) to time(50% input rise)
+
+The above timing parameters can be computed by noting down various values from the ngspice waveform.
+```
+Rise Transition : 2.25421 - 2.18636 = 0.006785 ns / 67.85ps
+Fall Transition : 4.09605 - 4.05554 = 0.04051ns / 40.51ps
+Cell Rise Delay : 2.21701 - 2.14989 = 0.06689ns / 66.89ps
+Cell Fall Delay : 4.07816 - 4.05011 = 0.02805ns / 28.05ps
+```
+
+## Day 4
