@@ -432,9 +432,11 @@ set_propagated_clock (all_clocks)
 report_checks -path_delay min_max -format full_clock_expanded -digits 4
 ```
 Hold Slack:
+
 ![alt text](https://github.com/aamodbk/iiitb_ASIC_OpenLane/blob/main/hold_slack.png)
 
 Setup Slack:
-![alt text](https://github.com/aamodbk/iiitb_ASIC_OpenLane/blob/main/setup_slack.png)
+
+![alt text](https://github.com/aamodbk/iiitb_ASIC_OpenLane/blob/main/setupslack.png)
 
 ## Day 5
