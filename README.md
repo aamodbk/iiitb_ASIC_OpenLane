@@ -36,7 +36,7 @@ OpenLane integrated several key open source tools over the execution stages:
 Follow the following steps while in directory with OpenLane installed to run synthesis on the PicoRV32 RISC-V processor core verilog code:
 ```
 cd ./OpenLane
-make mount
+sudo make mount
 ./flow.tcl -interactive
 package require openlane 0.9
 prep -design picorv32a
@@ -168,7 +168,7 @@ Floorplanning and placement involve following stages:
 * Pin Placement
 
 #### Steps to perform Floorplanning and Placement
-To perform floorplanning:
+To perform floorplanning in tcl console:
 ```
 run_floorplan
 ```
@@ -183,7 +183,7 @@ magic -T /home/aamod/Stoodies/wslfiles/Sem-7/ASIC/OpenLane/pdks/sky130A/libs.tec
 
 ![alt text](https://github.com/aamodbk/iiitb_ASIC_OpenLane/blob/main/magic_floorplan.png)
 
-To perform placement:
+To perform placement in tcl console:
 ```
 run_floorplan
 ```
@@ -327,4 +327,114 @@ Cell Rise Delay : 2.21701 - 2.14989 = 0.06689ns / 66.89ps
 Cell Fall Delay : 4.07816 - 4.05011 = 0.02805ns / 28.05ps
 ```
 
+To get a grid and to ensure the ports are placed correctly we can use this command in the tkcon console:
+```
+grid 0.46um 0.34um 0.23um 0.17um
+```
+
 ## Day 4
+### Custom cell naming and Lef Extraction
+To save the new .mag file, save it with a different name:
+```
+%   save sky130_vsdinv.mag
+```
+
+Then, in the tkcon console type the following to generate the .lef file:
+```
+$   lef write
+```
+
+This generates `sky130_vsdinv.lef` file.
+
+### Steps to include custom cell in ASIC design
+We have created a custom standard cell in previous steps of an inverter. Into the `OpenLane\designs\picorv32a\src` folder, copy the following files:
+* `sky130_fd_sc_hd__fast.lib`
+* `sky130_fd_sc_hd__slow.lib`
+* `sky130_fd_sc_hd__typical.lib`
+* `sky130_vsdinv.lef`
+
+Now, edit the created file `config.tcl` to look like:
+```
+set ::env(DESIGN_NAME) "picorv32a"
+
+set ::env(VERILOG_FILES) "$::env(DESIGN_DIR)/src/picorv32a.v"
+
+set ::env(CLOCK_PORT) "clk"
+set ::env(CLOCK_NET) $::env(CLOCK_PORT)
+
+set ::env(GLB_RESIZER_TIMING_OPTIMIZATIONS) {1}
+
+set ::env(LIB_SYNTH) "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__typical.lib"
+set ::env(LIB_SLOWEST) "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__slow.lib"
+set ::env(LIB_FASTEST) "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__fast.lib"
+set ::env(LIB_TYPICAL) "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__typical.lib"
+
+set filename $::env(DESIGN_DIR)/$::env(PDK)_$::env(STD_CELL_LIBRARY)_config.tcl
+if { [file exists $filename] == 1} {
+	source $filename
+}
+```
+
+Change current directory to `OpenLane` and run the following on the terminal:
+```
+$   sudo make mount
+```
+When the OpenLane container opens type the following to open the TCL console:
+```
+$   ./flow.tcl -interactive
+```
+
+Then run the below commands on the TCL console:
+```
+%   package require openlane 0.9
+%   prep -design picorv32a
+```
+Now type the following command to merge the .lef files into a new file named `merged.nom.lef` in the `designs/picorv32a/runs/` folder:
+```
+%   set lefs [glob $::env(DESIGN_DIR)/src/*.lef]
+%   add_lefs -src $lefs
+```
+Next run the `run_synthesis` command.
+Synthesis and STA Logs:
+
+![alt text](https://github.com/aamodbk/iiitb_ASIC_OpenLane/blob/main/synth_sta_logs.png)
+
+Next type in the `run_floorplan` and `run_placement` command and check the generated layout in magic.
+
+![alt text](https://github.com/aamodbk/iiitb_ASIC_OpenLane/blob/main/sky130_inv_magic.png)
+
+### Post-Synthesis timimg analysis using OpenSTA
+Timing analysis is carried out outside the openLANE flow using OpenSTA tool. For this, `pre_sta.conf` is required to carry out the STA analysis. Invoke OpenSTA outside the openLANE flow as follows:
+```
+sta pre_sta.conf
+```
+Copy the SDC file required for openSTA into the `/src` directory of the design.
+
+### Clock Tree Synthesis in OpenLane
+To run CTS use the below command in the tcl console:
+```
+run_cts
+```
+After running CTS the obtained worst setup and hold slack are as follows:
+
+![alt text](https://github.com/aamodbk/iiitb_ASIC_OpenLane/blob/main/slacks.png)
+
+Next post CTS analysis is performed by OpenRoad within OpenLane flow.
+```
+read_lef ./designs/picorv32a/runs/RUN_2023.10.01_23.15.12/tmp/merged.nom.lef
+read_def ./designs/picorv32a/runs/RUN_2023.10.01_23.15.12/results/cts/picorv32a.def
+write_db pico_cts.db
+read_db pico_cts.db
+read_verilog ./designs/picorv32a/runs/RUN_2023.10.01_23.15.12/results/synthesis/picorv32a.v
+read_liberty $::env(LIB_SYNTH_COMPLETE)
+read_sdc ./designs/picorv32a/src/my_base.sdc
+set_propagated_clock (all_clocks)
+report_checks -path_delay min_max -format full_clock_expanded -digits 4
+```
+Hold Slack:
+![alt text](https://github.com/aamodbk/iiitb_ASIC_OpenLane/blob/main/hold_slack.png)
+
+Setup Slack:
+![alt text](https://github.com/aamodbk/iiitb_ASIC_OpenLane/blob/main/setup_slack.png)
+
+## Day 5
