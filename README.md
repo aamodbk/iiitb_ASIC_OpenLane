@@ -58,5 +58,92 @@ To view report:
 vim 1-synthesis.AREA_0.stat.rpt
 ```
 
-![alt text](https://github.com/aamodbk/iiitb_ASIC_OpenLane/blob/main/synth_rpt.png)
+```
+24. Printing statistics.
 
+=== picorv32 ===
+
+   Number of wires:               9190
+   Number of wire bits:           9572
+   Number of public wires:        1512
+   Number of public wire bits:    1894
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:               9470
+     sky130_fd_sc_hd__a2111o_2       1
+     sky130_fd_sc_hd__a2111oi_2      1
+     sky130_fd_sc_hd__a211o_2       79
+     sky130_fd_sc_hd__a211oi_2      14
+     sky130_fd_sc_hd__a21bo_2       11
+     sky130_fd_sc_hd__a21boi_2       7
+     sky130_fd_sc_hd__a21o_2       176
+     sky130_fd_sc_hd__a21oi_2       92
+     sky130_fd_sc_hd__a221o_2      136
+     sky130_fd_sc_hd__a221oi_2       1
+     sky130_fd_sc_hd__a22o_2       129
+     sky130_fd_sc_hd__a22oi_2        2
+     sky130_fd_sc_hd__a2bb2o_2      15
+     sky130_fd_sc_hd__a311o_2       28
+     sky130_fd_sc_hd__a311oi_2       1
+     sky130_fd_sc_hd__a31o_2        60
+     sky130_fd_sc_hd__a31oi_2        2
+     sky130_fd_sc_hd__a32o_2       111
+     sky130_fd_sc_hd__a41o_2         2
+     sky130_fd_sc_hd__and2_2       202
+     sky130_fd_sc_hd__and2b_2       46
+     sky130_fd_sc_hd__and3_2       113
+     sky130_fd_sc_hd__and3b_2       32
+     sky130_fd_sc_hd__and4_2        39
+     sky130_fd_sc_hd__and4b_2        5
+     sky130_fd_sc_hd__buf_1       2599
+     sky130_fd_sc_hd__buf_2          8
+     sky130_fd_sc_hd__conb_1       106
+     sky130_fd_sc_hd__dfxtp_2     1596
+     sky130_fd_sc_hd__inv_2         63
+     sky130_fd_sc_hd__mux2_1         1
+     sky130_fd_sc_hd__mux2_2      1592
+     sky130_fd_sc_hd__mux4_2       478
+     sky130_fd_sc_hd__nand2_2      225
+     sky130_fd_sc_hd__nand2b_2       2
+     sky130_fd_sc_hd__nand3_2        9
+     sky130_fd_sc_hd__nand3b_2       5
+     sky130_fd_sc_hd__nand4_2        3
+     sky130_fd_sc_hd__nor2_2       289
+     sky130_fd_sc_hd__nor2b_2        1
+     sky130_fd_sc_hd__nor3_2        12
+     sky130_fd_sc_hd__nor3b_2        5
+     sky130_fd_sc_hd__nor4_2         4
+     sky130_fd_sc_hd__nor4b_2        2
+     sky130_fd_sc_hd__o2111a_2       5
+     sky130_fd_sc_hd__o211a_2       84
+     sky130_fd_sc_hd__o211ai_2      10
+     sky130_fd_sc_hd__o21a_2       192
+     sky130_fd_sc_hd__o21ai_2      181
+     sky130_fd_sc_hd__o21ba_2       21
+     sky130_fd_sc_hd__o21bai_2       4
+     sky130_fd_sc_hd__o221a_2       44
+     sky130_fd_sc_hd__o221ai_2      28
+     sky130_fd_sc_hd__o22a_2        42
+     sky130_fd_sc_hd__o22ai_2        1
+     sky130_fd_sc_hd__o2bb2a_2       4
+     sky130_fd_sc_hd__o311a_2        5
+     sky130_fd_sc_hd__o311ai_2       1
+     sky130_fd_sc_hd__o31a_2         8
+     sky130_fd_sc_hd__o31ai_2        4
+     sky130_fd_sc_hd__o32a_2         6
+     sky130_fd_sc_hd__o32ai_2        1
+     sky130_fd_sc_hd__o41a_2         3
+     sky130_fd_sc_hd__or2_2        294
+     sky130_fd_sc_hd__or2b_2        38
+     sky130_fd_sc_hd__or3_2         30
+     sky130_fd_sc_hd__or3b_2        24
+     sky130_fd_sc_hd__or4_2         25
+     sky130_fd_sc_hd__or4b_2         8
+     sky130_fd_sc_hd__xnor2_2       60
+     sky130_fd_sc_hd__xor2_2        42
+
+   Chip area for module '\picorv32': 99853.267200
+```
+
+## Day 2
