@@ -147,3 +147,28 @@ vim 1-synthesis.AREA_0.stat.rpt
 ```
 
 ## Day 2
+### Chip Floorplanning Considerations
+**Utilisation Factor**: The ratio of area occupied by the cells in the netlist to the total area of the core. Best practice is to set the utilisation factor less than 50% so that there will be space for optimisations, routing, inserting buffers etc.
+```
+Utilization Factor = Area occupied by netlist
+                     -------------------------
+                      Total area of the core 
+```
+**Aspect Ratio**: Aspect ratio is the ratio of height to the width of the die. Aspect Ratio of 1 indicates that the die is a square die.
+```
+Aspect Ratio = Height of Core
+              ----------------
+               Width of Core
+```
+### Floorplanning and Placement
+Floorplanning and placement involve following stages:
+* Pre-Placed cells
+* Decoupling Capacitors to the pre placed cells
+* Power Planning
+* Pin Placement
+
+#### Steps to perform Floorplanning and Placement
+To perform floorplanning:
+```
+run_floorplanning
+```
