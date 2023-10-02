@@ -475,3 +475,6 @@ Perform the routing using the following command:
 run_routing
 ```
 
+After detailed routing is done we see that no DRC violations remain:
+
+![alt text](https://github.com/aamodbk/iiitb_ASIC_OpenLane/blob/main/violations.png)
