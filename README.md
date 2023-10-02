@@ -397,11 +397,11 @@ Now type the following command to merge the .lef files into a new file named `me
 Next run the `run_synthesis` command.
 Synthesis and STA Logs:
 
-![alt text](https://github.com/aamodbk/iiitb_ASIC_OpenLane/blob/main/synth_sta_logs.png)
+![alt text](https://github.com/aamodbk/iiitb_ASIC_OpenLane/blob/main/synth_sta_log.png)
 
 Next type in the `run_floorplan` and `run_placement` command and check the generated layout in magic.
 
-![alt text](https://github.com/aamodbk/iiitb_ASIC_OpenLane/blob/main/sky130_inv_magic.png)
+![alt text](https://github.com/aamodbk/iiitb_ASIC_OpenLane/blob/main/magic_vsd_inv.png)
 
 ### Post-Synthesis timimg analysis using OpenSTA
 Timing analysis is carried out outside the openLANE flow using OpenSTA tool. For this, `pre_sta.conf` is required to carry out the STA analysis. Invoke OpenSTA outside the openLANE flow as follows:
@@ -440,3 +440,38 @@ Setup Slack:
 ![alt text](https://github.com/aamodbk/iiitb_ASIC_OpenLane/blob/main/setupslack.png)
 
 ## Day 5
+### Maze Routing and Lee's Algorithm
+Maze routing is a problem-solving technique used in various fields, including computer science, engineering, and robotics. It involves finding a path through a maze or grid-like structure from a starting point to a destination while avoiding obstacles or obstacles with certain properties. Maze routing is essential in various applications, such as circuit design, robotics path planning, and network routing.
+The Maze Routing algorithm, such as the Lee algorithm, is one approach for solving routing problems. In this method, a grid similar to the one created during cell customization is utilized for routing purposes. The Lee algorithm starts with two designated points, the source and target, and leverages the routing grid to identify the shortest or optimal route between them.
+However, the Lee algorithm has limitations. It essentially constructs a maze and then numbers its cells from the source to the target. While effective for routing between two pins, it can be time-consuming when dealing with millions of pins. There are alternative algorithms that address similar routing challenges.
+
+### Design Rule Check (DRC)
+DRC verifies whether a design meets the predefined process technology rules given by the foundry for its manufacturing. DRC checking is an essential part of the physical design flow and ensures the design meets manufacturing requirements and will not result in a chip failure. It defines the Quality of chip.
+
+**Design rules for physical wires**:
+Minimum width of the wire, Minimum spacing between the wires, Minimum pitch of the wire To solve signal short violation, we take the metal layer and put it on to upper metal layer. we check via rules, Via width, via spacing.
+
+### Power Distribution Network Generation
+Unlike the general ASIC flow PDN is not a part of the flow run by OpenLane. PDN must be generated after CTS and post-CTS STA analyses:
+We can check whether PDN has been created or no by check the current `def` environment variable:  `echo $::env(CURRENT_DEF)`
+```
+prep -design picorv32a -tag RUN_2023.10.01_23.15.12
+gen_pdn
+```
+Once the command is given, power distribution network is generated.
+
+### Routing
+In the realm of routing within Electronic Design Automation (EDA) tools, such as both OpenLANE and commercial EDA tools, the routing process is exceptionally intricate due to the vast design space. To simplify this complexity, the routing procedure is typically divided into two distinct stages: Global Routing and Detailed Routing.
+* Global Routing: In this stage, the routing region is subdivided into rectangular grid cells and represented as a coarse 3D routing graph. This task is accomplished by the "FASTE ROUTE" engine.
+* Detailed Routing: Here, finer grid granularity and routing guides are employed to implement the physical wiring. The "tritonRoute" engine comes into play at this stage. "Fast Route" generates initial routing guides, while "Triton Route" utilizes the Global Route information and further refines the routing, employing various strategies and optimizations to determine the most optimal path for connecting the pins.
+
+#### TritonRoute features
+* Performs detailed routing and honors the pre-processed route guides (made by global route) and uses MILP based (Mixed Integer Linear Programming algorithm) panel routing scheme(uses panel as the grid guide for routing) with intra-layer parallel routing (routing happens simultaneously in a single layer) and inter-layer sequential layer (routing starts from bottom metal layer to top metal layer sequentially and not simultaneously).
+* Honors preferred direction of a layer. Metal layer direction is alternating (metal layer direction is specified in the LEF file e.g. met1 Horizontal, met2 Vertical, etc.) to reduce overlapping wires between layer and reduce potential capacitance which can degrade the signal.
+TritonRoute is a sophisticated tool that not only performs initial detail routing but also places a strong emphasis on optimizing routing within pre-processed route guides by breaking down, merging, and bridging them as needed to achieve efficient and effective routing results.
+
+Perform the routing using the following command:
+```
+run_routing
+```
+
